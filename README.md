@@ -11,18 +11,13 @@ I have set this to work with cmake/make on Ubuntu, both cmake and make *should* 
 To clone the kitchen sinc repository, open terminal:
 
 ```terminal
-git clone https://github.com/aaronaanderson/KitchenSinc.git
+git clone --recursive -j4 https://github.com/aaronaanderson/KitchenSinc.git
 ```
 
-Now you should have a folder called KitchenSinc; change directories to it
+The --recursive flag tells git to grab pedal and juce from their respective repositories at the same time. If you cloned and forgot the --recursive flag, you can grab the repositories updating the submodules. 
 
 ```terminal
 cd KitchenSinc
-```
-
-Now grab juce and pedal by running this line (Only links are stored in this repo, these point to the original repo for pedal and JUCE)
-
-```terminal
 git submodule update --init --recursive
 ```
 
