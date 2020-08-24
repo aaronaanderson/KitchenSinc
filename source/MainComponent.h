@@ -10,8 +10,7 @@
 
 #include <juce_dsp/juce_dsp.h>
 //grab a trival sine wave 
-#include "pedal/TSine.hpp"
-
+#include "customProcessors/ToneGenerator.hpp"
 class MainComponent   : public juce::Component
 {
 public:
@@ -33,6 +32,9 @@ private:
     juce::AudioDeviceManager deviceManager;
     //The audio graph will store and set the full DSP chain.
     std::unique_ptr<juce::AudioProcessorGraph> audioGraph;
+    juce::AudioProcessorGraph::Node::Ptr audioInputNode;//access to hardware input
+    juce::AudioProcessorGraph::Node::Ptr audioOutputNode;//access to hardware output
+    juce::AudioProcessorGraph::Node::Ptr testToneNode;
     //this DSP chain will be executed by the processorPlayer
     juce::AudioProcessorPlayer processorPlayer;
     //this is JUCE's convenience MACRO to make sure we don't make terrible, terrible mistakes with our pointers

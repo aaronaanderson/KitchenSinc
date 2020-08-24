@@ -4,8 +4,22 @@
 MainComponent::MainComponent() :
   audioGraph(std::make_unique<juce::AudioProcessorGraph>())
 {
-    setSize (600, 400);
+  setSize (600, 400);
     
+  processorPlayer.setProcessor(audioGraph.get());
+  deviceManager.initialiseWithDefaultDevices(0, 2);
+  deviceManager.addAudioCallback(&processorPlayer);
+  //set up the graph
+  audioGraph->clear();
+  audioInputNode = audioGraph->addNode(std::make_unique<juce::AudioProcessorGraph::AudioGraphIOProcessor>(juce::AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode));
+  audioOutputNode = audioGraph->addNode(std::make_unique<juce::AudioProcessorGraph::AudioGraphIOProcessor>(juce::AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode));
+  testToneNode = audioGraph->addNode(std::make_unique<ToneGenerator>());
+  testToneNode->getProcessor()->setPlayConfigDetails(0, 2, deviceManager.getAudioDeviceSetup().sampleRate, deviceManager.getAudioDeviceSetup().bufferSize);
+  audioGraph->addConnection({{testToneNode->nodeID, 0}, 
+                             {audioOutputNode->nodeID, 0}});
+  audioGraph->addConnection({{testToneNode->nodeID, 1}, 
+                             {audioOutputNode->nodeID, 1}});
+
 }
 
 //==============================================================================
