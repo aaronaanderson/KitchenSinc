@@ -11,27 +11,30 @@
 #include <juce_dsp/juce_dsp.h>
 //grab a trival sine wave 
 #include "pedal/TSine.hpp"
-//==============================================================================
-/*
-    This component lives inside our window, and this is where you should put all
-    your controls and content.
-*/
-class MainComponent   : public juce::AudioAppComponent
+
+class MainComponent   : public juce::Component
 {
 public:
     //==============================================================================
     MainComponent();
     
     //Audio stuff==============================================================================
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
-    void releaseResources() override;
+    //void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    //void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    //void releaseResources() override;
     //Graphics stuff==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
     
     TSine sineOsc;//simple sin oscillator
-private:
 
+private:
+    //Instead of inheriting from juce::AudioAppComponent, we make our own deviceManager
+    juce::AudioDeviceManager deviceManager;
+    //The audio graph will store and set the full DSP chain.
+    std::unique_ptr<juce::AudioProcessorGraph> audioGraph;
+    //this DSP chain will be executed by the processorPlayer
+    juce::AudioProcessorPlayer processorPlayer;
+    //this is JUCE's convenience MACRO to make sure we don't make terrible, terrible mistakes with our pointers
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
