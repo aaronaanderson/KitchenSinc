@@ -16,7 +16,7 @@ class MainComponent   : public juce::Component
 public:
     //==============================================================================
     MainComponent();
-    
+    ~MainComponent();
     //Audio stuff==============================================================================
     //void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
     //void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;

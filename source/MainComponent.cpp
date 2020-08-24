@@ -12,6 +12,7 @@ MainComponent::MainComponent() :
   deviceManager.initialiseWithDefaultDevices(0, 2);
   //Tell the processor player to keep moving every time the device requests more data
   deviceManager.addAudioCallback(&processorPlayer);
+
   //set up the graph
   audioGraph->clear();//likely not needed but won't hurt
   //a node that passes in input from your device (not currently used)
@@ -28,6 +29,7 @@ MainComponent::MainComponent() :
   //connect the 'right' channel
   audioGraph->addConnection({{testToneNode->nodeID, 1}, 
                              {audioOutputNode->nodeID, 1}});
+                             
 
 }
 
@@ -45,4 +47,9 @@ void MainComponent::paint (juce::Graphics& g)
 void MainComponent::resized()
 {
 
+}
+MainComponent::~MainComponent(){
+  deviceManager.closeAudioDevice();
+  //unfortunately the naming convention to de-allocate a unique pointer is .reset()
+  audioGraph.reset();
 }
