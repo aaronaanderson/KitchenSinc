@@ -5,18 +5,27 @@ MainComponent::MainComponent() :
   audioGraph(std::make_unique<juce::AudioProcessorGraph>())
 {
   setSize (600, 400);
-    
+  
+  //tell the ProcessorPlayer what audio callback function to play (.get() needed since audioGraph is a unique_ptr)
   processorPlayer.setProcessor(audioGraph.get());
+  //simplest way to start audio device. Uses whichever device the current system (mac/pc/linux machine) uses
   deviceManager.initialiseWithDefaultDevices(0, 2);
+  //Tell the processor player to keep moving every time the device requests more data
   deviceManager.addAudioCallback(&processorPlayer);
   //set up the graph
-  audioGraph->clear();
+  audioGraph->clear();//likely not needed but won't hurt
+  //a node that passes in input from your device (not currently used)
   audioInputNode = audioGraph->addNode(std::make_unique<juce::AudioProcessorGraph::AudioGraphIOProcessor>(juce::AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode));
+  //a node that passes audio out to your device
   audioOutputNode = audioGraph->addNode(std::make_unique<juce::AudioProcessorGraph::AudioGraphIOProcessor>(juce::AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode));
+  //a simple sine tone generator node
   testToneNode = audioGraph->addNode(std::make_unique<ToneGenerator>());
+  //set the details of the processor (io and samplerate/buffersize 
   testToneNode->getProcessor()->setPlayConfigDetails(0, 2, deviceManager.getAudioDeviceSetup().sampleRate, deviceManager.getAudioDeviceSetup().bufferSize);
+  //connect the 'left' channel
   audioGraph->addConnection({{testToneNode->nodeID, 0}, 
                              {audioOutputNode->nodeID, 0}});
+  //connect the 'right' channel
   audioGraph->addConnection({{testToneNode->nodeID, 1}, 
                              {audioOutputNode->nodeID, 1}});
 
