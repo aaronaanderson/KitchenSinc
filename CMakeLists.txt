@@ -50,7 +50,8 @@ add_subdirectory(pedal)
 target_sources(KitchSinc PRIVATE
     source/Main.cpp
     source/MainComponent.cpp
-    source/customProcessors/ToneGenerator.cpp    
+    source/customProcessors/ToneGenerator.cpp
+    source/customProcessors/AudioSettingsComponent.cpp
 )
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
