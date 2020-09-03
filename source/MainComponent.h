@@ -20,9 +20,12 @@
     your controls and content.
 */
 class MainComponent : public juce::Component {
+  juce::AudioAppComponent
  public:
   //==============================================================================
-  MainComponent();
+  MainComponent(){
+
+  }
   ~MainComponent();
 
   // Graphics
@@ -33,10 +36,12 @@ class MainComponent : public juce::Component {
   TSine sineOsc;  // simple sine oscillator
 
  private:
+  float* floatptr; 
   // Instead of inheriting from juce::AudioAppComponent, we make our own deviceManager
   juce::AudioDeviceManager deviceManager;
   // The audio graph will store and set the full DSP chain.
   std::unique_ptr<juce::AudioProcessorGraph> audioGraph;
+
   juce::AudioProcessorGraph::Node::Ptr audioInputNode;   // access to hardware input
   juce::AudioProcessorGraph::Node::Ptr audioOutputNode;  // access to hardware output
   juce::AudioProcessorGraph::Node::Ptr testToneNode;

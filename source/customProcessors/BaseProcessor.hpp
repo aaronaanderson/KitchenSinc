@@ -12,10 +12,10 @@ repeated code.
 class BaseProcessor : public juce::AudioProcessor{
   public:
     BaseProcessor(){}
- 
+    virtual ~BaseProcessor(){}
     //==============================================================================
     void prepareToPlay (double, int) override {}
-    void releaseResources() override {}
+    void releaseResources() override  {}
     void processBlock (juce::AudioSampleBuffer&, juce::MidiBuffer&) override {}
  
     //==============================================================================
