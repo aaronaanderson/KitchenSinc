@@ -31,15 +31,10 @@ MainComponent::MainComponent()
   testToneNode->getProcessor()->setPlayConfigDetails(
     0, 2, deviceManager.getAudioDeviceSetup().sampleRate,
     deviceManager.getAudioDeviceSetup().bufferSize);
-  testToneNode->getProcessor()->getName();
-  audioGraph->
   // connect the 'left' channel
-  //auto delayProcessorNodeRef = audioGraph->addNode(std::make_unique<DelayProcessor>());
-  audioGraph->addConnection({{audioInputNode->nodeID, 0}, {delayProcessorNodeRef->nodeID, 0}});
-  audioGraph->addConnection({{testToneNode->nodeID, 0}, {delayProcessorNodeRef->nodeID, 0}});
+  audioGraph->addConnection({{testToneNode->nodeID, 0}, {audioOutputNode->nodeID, 0}});
   // connect the 'right' channel
   audioGraph->addConnection({{testToneNode->nodeID, 1}, {audioOutputNode->nodeID, 1}});
-  testTone->getProcesor();
   audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
   addAndMakeVisible(audioSettings.button);
 }

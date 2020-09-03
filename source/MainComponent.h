@@ -20,12 +20,9 @@
     your controls and content.
 */
 class MainComponent : public juce::Component {
-  juce::AudioAppComponent
  public:
   //==============================================================================
-  MainComponent(){
-
-  }
+  MainComponent();
   ~MainComponent();
 
   // Graphics
