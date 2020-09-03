@@ -11,17 +11,14 @@ BaseProcessor.hpp exists to overwrite default values inherited from AudioProcess
 #include "BaseProcessor.hpp"
 #include "pedal/TSine.hpp"
 
-#include 
 class ToneGenerator : public BaseProcessor{
   public: 
-  ToneGenerator() : BaseProcessor(){
-    
-  }
+  ToneGenerator();
   
   virtual void prepareToPlay (double, int) override;
   virtual void processBlock (juce::AudioSampleBuffer&, juce::MidiBuffer&) override;
   virtual void releaseResources() override; 
-  void getName() override {return "TestTone";}
+  const juce::String getName() const override {return "TestTone";}
   private:
   TSine oscillator;
 };
