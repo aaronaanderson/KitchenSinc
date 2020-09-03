@@ -8,6 +8,7 @@ MainComponent::MainComponent()
 
   // tell the ProcessorPlayer what audio callback function to play (.get() needed since audioGraph
   // is a unique_ptr)
+  
   processorPlayer.setProcessor(audioGraph.get());
   // simplest way to start audio device. Uses whichever device the current system (mac/pc/linux
   // machine) uses
@@ -30,15 +31,19 @@ MainComponent::MainComponent()
   testToneNode->getProcessor()->setPlayConfigDetails(
     0, 2, deviceManager.getAudioDeviceSetup().sampleRate,
     deviceManager.getAudioDeviceSetup().bufferSize);
+  testToneNode->getProcessor()->getName();
+  audioGraph->
   // connect the 'left' channel
-  audioGraph->addConnection({{testToneNode->nodeID, 0}, {audioOutputNode->nodeID, 0}});
+  //auto delayProcessorNodeRef = audioGraph->addNode(std::make_unique<DelayProcessor>());
+  audioGraph->addConnection({{audioInputNode->nodeID, 0}, {delayProcessorNodeRef->nodeID, 0}});
+  audioGraph->addConnection({{testToneNode->nodeID, 0}, {delayProcessorNodeRef->nodeID, 0}});
   // connect the 'right' channel
   audioGraph->addConnection({{testToneNode->nodeID, 1}, {audioOutputNode->nodeID, 1}});
-
+  testTone->getProcesor();
   audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
   addAndMakeVisible(audioSettings.button);
 }
-
+//TrackGroup* trackGroupPtr = dynamic_cast<TrackGroup*>(graphElementList.data()[groupID].get());
 //==============================================================================
 void MainComponent::paint(juce::Graphics& g) {
   // (Our component is opaque, so we must completely fill the background with a
