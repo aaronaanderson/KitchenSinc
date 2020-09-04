@@ -90,4 +90,5 @@ target_link_libraries(KitchSinc PRIVATE
     juce::juce_gui_basics
     juce::juce_audio_devices
     juce::juce_audio_utils
-    juce::juce_gui_extra)
+    juce::juce_gui_extra
+    juce::juce_dsp)
