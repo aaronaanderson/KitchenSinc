@@ -3,12 +3,11 @@
 //==============================================================================
 MainComponent::MainComponent()
   : audioGraph(std::make_unique<juce::AudioProcessorGraph>()), audioSettings(deviceManager) {
-
   setSize(600, 400);
 
   // tell the ProcessorPlayer what audio callback function to play (.get() needed since audioGraph
   // is a unique_ptr)
-  
+
   processorPlayer.setProcessor(audioGraph.get());
   // simplest way to start audio device. Uses whichever device the current system (mac/pc/linux
   // machine) uses
@@ -38,7 +37,7 @@ MainComponent::MainComponent()
   audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
   addAndMakeVisible(audioSettings.button);
 }
-//TrackGroup* trackGroupPtr = dynamic_cast<TrackGroup*>(graphElementList.data()[groupID].get());
+// TrackGroup* trackGroupPtr = dynamic_cast<TrackGroup*>(graphElementList.data()[groupID].get());
 //==============================================================================
 void MainComponent::paint(juce::Graphics& g) {
   // (Our component is opaque, so we must completely fill the background with a
@@ -55,11 +54,11 @@ void MainComponent::resized() {
   // If you add any child components, this is where you should
   // update their positions.
   audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
-
 }
 
 MainComponent::~MainComponent() {
   deviceManager.closeAudioDevice();
   // unfortunately the naming convention to de-allocate a unique pointer is .reset()
   audioGraph.reset();
+  deleteAllChildren();
 }
