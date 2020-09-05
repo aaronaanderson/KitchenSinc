@@ -1,4 +1,4 @@
-#include "AudioSettingsComponent.h"
+#include "AudioSettingsComponent.hpp"
 //==============================================================================
 audioSettingsComponent::audioSettingsComponent(juce::AudioDeviceManager& parentDeviceManager_)
   : audioSetupComp(parentDeviceManager_,
