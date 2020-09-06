@@ -50,7 +50,7 @@ add_subdirectory(pedal)
 target_sources(KitchSinc PRIVATE
     source/Main.cpp
     source/MainComponent.cpp
-    source/customProcessors/AudioSettingsComponent.cpp
+    source/AudioSettingsComponent.cpp
     source/customProcessors/ToneGenerator.cpp
     source/customProcessors/SpectrogramComponent.cpp
 )
