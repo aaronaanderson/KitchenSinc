@@ -13,7 +13,7 @@
 // grab a trival sine wave
 #include "customProcessors/ToneGenerator.hpp"
 // our components
-#include "customProcessors/AudioSettingsComponent.hpp"
+#include "AudioSettingsComponent.hpp"
 #include "customProcessors/SpectrogramComponent.hpp"
 //==============================================================================
 /*
