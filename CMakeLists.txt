@@ -53,6 +53,7 @@ target_sources(KitchSinc PRIVATE
     source/AudioSettingsComponent.cpp
     source/customProcessors/ToneGenerator.cpp
     source/customProcessors/SpectrogramComponent.cpp
+    source/customProcessors/MidiSynthProcessor.cpp
 )
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer

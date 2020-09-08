@@ -15,16 +15,19 @@ MainComponent::MainComponent()
   deviceManager.initialiseWithDefaultDevices(2, 2);
   // Tell the processor player to keep moving every time the device requests more data
   deviceManager.addAudioCallback(&processorPlayer);
+  deviceManager.setMidiInputDeviceEnabled(juce::MidiInput::getDefaultDevice().identifier, true);
+  deviceManager.addMidiInputDeviceCallback(juce::MidiInput::getDefaultDevice().identifier, &processorPlayer);
   // set up the graph
   audioGraph->clear();  // likely not needed but won't hurt
-  // a node that passes in input from your device (not currently used)
-  audioInputNode =
-    audioGraph->addNode(std::make_unique<juce::AudioProcessorGraph::AudioGraphIOProcessor>(
-      juce::AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode));
+
   // a node that passes audio out to your device
-  audioOutputNode =
-    audioGraph->addNode(std::make_unique<juce::AudioProcessorGraph::AudioGraphIOProcessor>(
-      juce::AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode));
+  audioOutputNode = audioGraph->addNode(std::make_unique<juce::AudioProcessorGraph::AudioGraphIOProcessor>(juce::AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode));
+  // a node that passes audio from your device to the graph
+  audioInputNode = audioGraph->addNode(std::make_unique<juce::AudioProcessorGraph::AudioGraphIOProcessor>(juce::AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode));
+  // a node that takes midi input from hardware interface, or from another software interface
+  midiInputNode = audioGraph->addNode(std::make_unique<juce::AudioProcessorGraph::AudioGraphIOProcessor>(juce::AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode));
+
+  
   // a simple sine tone generator node
   testToneNode = audioGraph->addNode(std::make_unique<ToneGenerator>());
   // set the details of the processor (io and samplerate/buffersize
@@ -32,9 +35,20 @@ MainComponent::MainComponent()
     0, 2, deviceManager.getAudioDeviceSetup().sampleRate,
     deviceManager.getAudioDeviceSetup().bufferSize);
   // connect the 'left' channel
-  audioGraph->addConnection({{testToneNode->nodeID, 0}, {audioOutputNode->nodeID, 0}});
-  // connect the 'right' channel
-  audioGraph->addConnection({{testToneNode->nodeID, 1}, {audioOutputNode->nodeID, 1}});
+  
+  // audioGraph->addConnection({{testToneNode->nodeID, 0}, {audioOutputNode->nodeID, 0}});
+  // // connect the 'right' channel
+  // audioGraph->addConnection({{testToneNode->nodeID, 1}, {audioOutputNode->nodeID, 1}});
+  
+  sineSynthNode = audioGraph->addNode(std::make_unique<MidiSynthProcessor>());
+  sineSynthNode->getProcessor()->setPlayConfigDetails(0, 2, deviceManager.getAudioDeviceSetup().sampleRate, 
+                                                            deviceManager.getAudioDeviceSetup().bufferSize);
+  //give the sine synth some MIDI so it knows what to do
+  audioGraph->addConnection({{midiInputNode->nodeID, juce::AudioProcessorGraph::midiChannelIndex}, 
+                             {sineSynthNode->nodeID, juce::AudioProcessorGraph::midiChannelIndex}});
+  //connect the audio output of sinesynth to hardware output
+  audioGraph->addConnection({{sineSynthNode->nodeID, 0}, {audioOutputNode->nodeID, 0}});
+  audioGraph->addConnection({{sineSynthNode->nodeID, 1}, {audioOutputNode->nodeID, 1}});
 
   // Spectrogram
   spectrogramNode = audioGraph->addNode(std::make_unique<SpectrogramComponent>());

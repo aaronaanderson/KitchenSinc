@@ -10,8 +10,8 @@
 #include <juce_dsp/juce_dsp.h>
 #include <juce_gui_extra/juce_gui_extra.h>
 
-// grab a trival sine wave
 #include "customProcessors/ToneGenerator.hpp"
+#include "customProcessors/MidiSynthProcessor.hpp"
 // our components
 #include "AudioSettingsComponent.hpp"
 #include "customProcessors/SpectrogramComponent.hpp"
@@ -36,7 +36,6 @@ class MainComponent : public juce::Component, private juce::Timer {
   TSine sineOsc;  // simple sine oscillator
 
  private:
-  float* floatptr;
   // Instead of inheriting from juce::AudioAppComponent, we make our own deviceManager
   juce::AudioDeviceManager deviceManager;
   // The audio graph will store and set the full DSP chain.
@@ -44,7 +43,9 @@ class MainComponent : public juce::Component, private juce::Timer {
 
   juce::AudioProcessorGraph::Node::Ptr audioInputNode;   // access to hardware input
   juce::AudioProcessorGraph::Node::Ptr audioOutputNode;  // access to hardware output
+  juce::AudioProcessorGraph::Node::Ptr midiInputNode;    // access to hardware/software MIDI input
   juce::AudioProcessorGraph::Node::Ptr testToneNode;
+  juce::AudioProcessorGraph::Node::Ptr sineSynthNode;
   juce::AudioProcessorGraph::Node::Ptr spectrogramNode;  // Spectrogram
   juce::AudioProcessorEditor* spectrogramEditor;         // Spectrogram editor
   // this DSP chain will be executed by the processorPlayer

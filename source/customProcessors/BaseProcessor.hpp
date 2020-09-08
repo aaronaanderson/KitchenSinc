@@ -12,6 +12,7 @@ repeated code.
 class BaseProcessor : public juce::AudioProcessor{
   public:
     BaseProcessor(){}
+    BaseProcessor(const BusesProperties& initialBusesProperties) : juce::AudioProcessor(initialBusesProperties){};
     virtual ~BaseProcessor(){}
     //==============================================================================
     void prepareToPlay (double, int) override {}
