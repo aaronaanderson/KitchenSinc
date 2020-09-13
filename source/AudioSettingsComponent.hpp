@@ -44,6 +44,5 @@ class audioSettingsComponent : public juce::Component,
   juce::Label cpuUsageText;
   juce::TextEditor diagnosticsBox;
   juce::AudioDeviceManager& parentDeviceManager;
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(audioSettingsComponent)
 };
