@@ -3,7 +3,7 @@
 SpectrogramComponent::SpectrogramComponent() : spectrogramImage(juce::Image::RGB, 512, 512, true) {
   forwardFFT = std::make_unique<juce::dsp::FFT>(fftOrder);
   window = std::make_unique<juce::dsp::WindowingFunction<float>>(
-    fftSize, juce::dsp::WindowingFunction<float>::WindowingMethod(windowType));
+    fftSize, juce::dsp::WindowingFunction<float>::WindowingMethod(windowType - 1));
   fifo.resize(fftSize);
   fftData.resize(fftSize * 2);
 }
@@ -76,7 +76,7 @@ void SpectrogramComponent::changeOrder(int order) {
   fifo.resize(fftSize);
   fftData.resize(fftSize * 2);
   window.reset(new juce::dsp::WindowingFunction<float>(
-    fftSize, juce::dsp::WindowingFunction<float>::WindowingMethod(windowType)));
+    fftSize, juce::dsp::WindowingFunction<float>::WindowingMethod(windowType - 1)));
   bypass = false;
 }
 
@@ -84,7 +84,7 @@ void SpectrogramComponent::changeWindowType(int type) {
   bypass = true;
   windowType = type;
   window.reset(new juce::dsp::WindowingFunction<float>(
-    fftSize, juce::dsp::WindowingFunction<float>::WindowingMethod(windowType)));
+    fftSize, juce::dsp::WindowingFunction<float>::WindowingMethod(windowType - 1)));
   bypass = false;
 }
 
@@ -111,7 +111,7 @@ SpectrogramComponent::Editor::Editor(SpectrogramComponent& owner)
   for (int i = 0; i < juce::dsp::WindowingFunction<float>::numWindowingMethods; i++)
     windowTypeMenu.addItem(juce::dsp::WindowingFunction<float>::getWindowingMethodName(
                              juce::dsp::WindowingFunction<float>::WindowingMethod(i)),
-                           i);
+                           i + 1);
   windowTypeMenu.setSelectedId(owner.windowType);
   windowTypeMenu.onChange = [&] { owner.changeWindowType(windowTypeMenu.getSelectedId()); };
   windowTypeLabel.attachToComponent(&windowTypeMenu, true);
