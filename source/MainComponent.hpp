@@ -45,8 +45,8 @@ class MainComponent : public juce::Component, private juce::Timer {
   juce::AudioProcessorGraph::Node::Ptr audioInputNode;   // access to hardware input
   juce::AudioProcessorGraph::Node::Ptr audioOutputNode;  // access to hardware output
   juce::AudioProcessorGraph::Node::Ptr testToneNode;
-  juce::AudioProcessorGraph::Node::Ptr spectrogramNode;  // Spectrogram
-  juce::AudioProcessorEditor* spectrogramEditor;         // Spectrogram editor
+  juce::AudioProcessorGraph::Node::Ptr spectrogramNode;           // Spectrogram
+  std::unique_ptr<juce::AudioProcessorEditor> spectrogramEditor;  // Spectrogram editor
   // this DSP chain will be executed by the processorPlayer
   juce::AudioProcessorPlayer processorPlayer;
   // Audio Settings window for changing IO settings at runtime

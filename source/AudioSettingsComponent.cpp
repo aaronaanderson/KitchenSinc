@@ -35,18 +35,21 @@ audioSettingsComponent::audioSettingsComponent(juce::AudioDeviceManager& parentD
 
   startTimer(50);
 
-  button.setButtonText("Audio Settings");
-  button.onClick = [&] {
-    this->window.launchAsync();
-    window.content.set(this, false);
+  button = std::make_unique<juce::TextButton>();
+  window = std::make_unique<juce::DialogWindow::LaunchOptions>();
+
+  button->setButtonText("Audio Settings");
+  button->onClick = [&] {
+    this->window->launchAsync();
+    window->content.set(this, false);
   };
 
-  window.dialogTitle = "Audio Settings";
-  window.escapeKeyTriggersCloseButton = true;
-  window.resizable = true;
-  window.useBottomRightCornerResizer = true;
-  window.useNativeTitleBar = false;
-  window.content.set(this, false);
+  window->dialogTitle = "Audio Settings";
+  window->escapeKeyTriggersCloseButton = true;
+  window->resizable = true;
+  window->useBottomRightCornerResizer = true;
+  window->useNativeTitleBar = false;
+  window->content.set(this, false);
 }
 
 audioSettingsComponent::~audioSettingsComponent() {
