@@ -45,11 +45,12 @@ MainComponent::MainComponent()
   audioGraph->addConnection({{audioInputNode->nodeID, 0}, {spectrogramNode->nodeID, 0}});
   // This is the best way I've found to get the editor and be able to display it. Just have your
   // mainComponent own a pointer to an editor, then point it to the editor when it's created.
-  spectrogramEditor = spectrogramNode->getProcessor()->createEditor();
+  spectrogramEditor =
+    std::unique_ptr<juce::AudioProcessorEditor>(spectrogramNode->getProcessor()->createEditor());
 
-  audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
-  addAndMakeVisible(audioSettings.button);
-  addAndMakeVisible(spectrogramEditor);
+  audioSettings.button->setBounds(getLocalBounds().removeFromTop(50));
+  addAndMakeVisible(audioSettings.button.get());
+  addAndMakeVisible(spectrogramEditor.get());
 }
 // TrackGroup* trackGroupPtr = dynamic_cast<TrackGroup*>(graphElementList.data()[groupID].get());
 //==============================================================================
@@ -74,7 +75,7 @@ void MainComponent::resized() {
   // This is called when the MainComponent is resized.
   // If you add any child components, this is where you should
   // update their positions.
-  audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
+  audioSettings.button->setBounds(getLocalBounds().removeFromTop(50));
 }
 
 MainComponent::~MainComponent() {
