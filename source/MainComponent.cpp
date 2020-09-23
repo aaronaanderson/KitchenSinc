@@ -1,13 +1,44 @@
 #include "MainComponent.hpp"
 
+//Should define this first before defining its container
+
+MainComponent::PluginListWindow::PluginListWindow(MainComponent& self, juce::AudioPluginFormatManager& managerReference)
+  : juce::DocumentWindow("Available Plugins", 
+                         juce::LookAndFeel::getDefaultLookAndFeel().findColour(ResizableWindow::backgroundColourId), 
+                         DocumentWindow::minimiseButton | DocumentWindow::closeButton),
+    owner(self)
+{
+  //auto crashedFile = getAppProperties().getUserSettings()->getFile().getSiblingFile("RecentlyCrashedPluginsList");
+  setContentOwned(new juce::PluginListComponent(managerReference, 
+                                          owner.knownPluginList,
+                                          juce::File(), //dummy input so I can use this component
+                                          nullptr), true);  
+  auto* plC = dynamic_cast<juce::PluginListComponent*>(getContentComponent());
+  setResizable(true, false);
+  setResizeLimits(300, 400, 1920, 1080);
+  setTopLeftPosition(60, 60);
+  setVisible(true);
+}
+MainComponent::PluginListWindow::~PluginListWindow(){
+  //We should set this here so it can be recovered when opening
+  //getAppProperties().getUserSettings()->setValue("listWindowPos", getWindowStateAsString());
+  clearContentComponent();
+}
+void MainComponent::PluginListWindow::closeButtonPressed(){
+  //erase ourself from the owner's reference
+  owner.pluginListWindow = nullptr;
+}
 //==============================================================================
 MainComponent::MainComponent()
   : audioGraph(std::make_unique<juce::AudioProcessorGraph>()), audioSettings(deviceManager) {
   setSize(600, 400);
   startTimerHz(30);
-
+  //#define JUCE_PLUGINHOST_LADSPA 1
+  formatManager.addDefaultFormats();
+  std::cout << formatManager.getNumFormats() << std::endl;
   // tell the ProcessorPlayer what audio callback function to play (.get() needed since audioGraph
   // is a unique_ptr)
+    pluginListWindow = std::make_unique<PluginListWindow>(*this, formatManager);
 
   processorPlayer.setProcessor(audioGraph.get());
   // simplest way to start audio device. Uses whichever device the current system (mac/pc/linux
@@ -32,9 +63,9 @@ MainComponent::MainComponent()
     0, 2, deviceManager.getAudioDeviceSetup().sampleRate,
     deviceManager.getAudioDeviceSetup().bufferSize);
   // connect the 'left' channel
-  audioGraph->addConnection({{testToneNode->nodeID, 0}, {audioOutputNode->nodeID, 0}});
-  // connect the 'right' channel
-  audioGraph->addConnection({{testToneNode->nodeID, 1}, {audioOutputNode->nodeID, 1}});
+  // audioGraph->addConnection({{testToneNode->nodeID, 0}, {audioOutputNode->nodeID, 0}});
+  // // connect the 'right' channel
+  // audioGraph->addConnection({{testToneNode->nodeID, 1}, {audioOutputNode->nodeID, 1}});
 
   // Spectrogram
   spectrogramNode = audioGraph->addNode(std::make_unique<SpectrogramComponent>());
@@ -83,4 +114,30 @@ MainComponent::~MainComponent() {
   // unfortunately the naming convention to de-allocate a unique pointer is .reset()
   audioGraph.reset();
   deleteAllChildren();
+}
+
+PluginWindow* MainComponent::getOrCreateWindowFor(juce::AudioProcessorGraph::Node::Ptr node){
+  if(node != nullptr){
+    //first check to make sure the window isn't already made
+    for(auto* windowPtr : activeWindows){//for each window in activeWindows
+      if(windowPtr->node.get() == node){//if there is already a window for this node
+        return windowPtr;//return it
+      }
+    }
+    //if the window hasn't been created and added to the active list yet, do that
+    //check it the node's processor actually exists (isn't a nullptr)
+    if(auto* processor = node->getProcessor()){
+      //here is how you check if its a plugin
+      if(auto* plugin = dynamic_cast<juce::AudioPluginInstance*>(processor)){
+        //if it is a plugin, you can grab things from it here
+        //presently I don't have anything to do wtih this, but leaving it here
+        //because it will be important
+      }
+      // create the new window, and return a pointer to it
+      auto* windowPtr = activeWindows.add(new PluginWindow(node, activeWindows));
+      return windowPtr;
+    }
+    //if we've gotten this far, we have failed
+    return nullptr;
+  }
 }

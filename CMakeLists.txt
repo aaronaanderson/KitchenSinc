@@ -39,13 +39,15 @@ juce_add_gui_app(KitchSinc
 
 # juce_generate_juce_header(KitchSinc)
 
+
+#compile pedal
+add_subdirectory(pedal)
+
 # `target_sources` adds source files to a target. We pass the target that needs the sources as the
 # first argument, then a visibility parameter for the sources (PRIVATE is normally best practice,
 # although it doesn't really affect executable targets). Finally, we supply a list of source files
 # that will be built into the target. This is a standard CMake command.
 
-#compile pedal
-add_subdirectory(pedal)
 
 target_sources(KitchSinc PRIVATE
     source/Main.cpp
@@ -53,6 +55,7 @@ target_sources(KitchSinc PRIVATE
     source/AudioSettingsComponent.cpp
     source/customProcessors/ToneGenerator.cpp
     source/customProcessors/SpectrogramComponent.cpp
+    source/PluginWindow.cpp
 )
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
@@ -67,7 +70,10 @@ target_compile_definitions(KitchSinc PRIVATE
     JUCE_WEB_BROWSER=0  # If you remove this, add `NEEDS_WEB_BROWSER TRUE` to the `juce_add_gui_app` call
     JUCE_USE_CURL=0     # If you remove this, add `NEEDS_CURL TRUE` to the `juce_add_gui_app` call
     JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:KitchSinc,JUCE_PROJECT_NAME>"
-    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:KitchSinc,JUCE_VERSION>")
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:KitchSinc,JUCE_VERSION>"
+    JUCE_PLUGINHOST_LADSPA=1
+    JUCE_PLUGINHOST_VST3=1
+)
 
 # If your target needs extra binary assets, you can add them here. The first argument is the name of
 # a new static library target that will include all the binary resources. There is an optional
