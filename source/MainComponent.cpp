@@ -14,11 +14,11 @@ MainComponent::AudioMidiSettingsWindow::AudioMidiSettingsWindow(MainComponent& s
                                                          16,
                                                          true, true, false, false), true);  
   //auto* plC = dynamic_cast<juce::AudioDeviceSelectorComponent*>(getContentComponent());
-  setResizable(true, false);
+  //setResizable(true, false);
+  setResizable(false, false);
   setResizeLimits(300, 400, 1920, 1080);
   setTopLeftPosition(60, 60);
   setVisible(true);
-  addKeyListener(this);
   //for keyboard listener
 }
 MainComponent::AudioMidiSettingsWindow::~AudioMidiSettingsWindow(){
@@ -31,12 +31,13 @@ void MainComponent::AudioMidiSettingsWindow::closeButtonPressed(){
   owner.settingsWindow = nullptr;
 }
 //==============================================================================
-MainComponent::MainComponent() : audioGraph(std::make_unique<juce::AudioProcessorGraph>())
-  {
-    //audioSettings(*this, deviceManager) {
+MainComponent::MainComponent() : 
+  audioGraph(std::make_unique<juce::AudioProcessorGraph>()),
+  audioSettings(deviceManager)
+{
   setSize(600, 400);
   startTimerHz(30);
-
+  addKeyListener(this);
   // tell the ProcessorPlayer what audio callback function to play (.get() needed since audioGraph
   // is a unique_ptr)
 
@@ -92,8 +93,8 @@ MainComponent::MainComponent() : audioGraph(std::make_unique<juce::AudioProcesso
   // mainComponent own a pointer to an editor, then point it to the editor when it's created.
   spectrogramEditor = spectrogramNode->getProcessor()->createEditor();
 
-  //audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
-  //addAndMakeVisible(audioSettings.button);
+  audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
+  addAndMakeVisible(audioSettings.button);
   addAndMakeVisible(spectrogramEditor);
 }
 // TrackGroup* trackGroupPtr = dynamic_cast<TrackGroup*>(graphElementList.data()[groupID].get());
@@ -107,10 +108,10 @@ void MainComponent::timerCallback() {
 
 bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* originatingComponent){
     if(key.isKeyCode('s')){
-      std::cout << "adsfkjhasdflkjhasdfkljh" << std::endl;
-      if(settingsWindow.get() != nullptr){
+
+
         settingsWindow = std::make_unique<AudioMidiSettingsWindow>(*this, deviceManager);
-      }
+      
     }
 }
 void MainComponent::paint(juce::Graphics& g) {
@@ -127,7 +128,7 @@ void MainComponent::resized() {
   // This is called when the MainComponent is resized.
   // If you add any child components, this is where you should
   // update their positions.
-  //audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
+  audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
 }
 
 MainComponent::~MainComponent() {

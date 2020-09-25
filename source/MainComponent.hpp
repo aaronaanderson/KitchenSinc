@@ -58,7 +58,7 @@ class MainComponent : public juce::Component,
   // this DSP chain will be executed by the processorPlayer
   juce::AudioProcessorPlayer processorPlayer;
   // Audio Settings window for changing IO settings at runtime
- // audioSettingsComponent audioSettings;
+  audioSettingsComponent audioSettings;
   // this is JUCE's convenience MACRO to make sure we don't make terrible, terrible mistakes with
   // our pointers
   class AudioMidiSettingsWindow;
