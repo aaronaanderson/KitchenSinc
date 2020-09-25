@@ -54,5 +54,6 @@ class MainComponent : public juce::Component, private juce::Timer {
   audioSettingsComponent audioSettings;
   // this is JUCE's convenience MACRO to make sure we don't make terrible, terrible mistakes with
   // our pointers
+  juce::AudioDeviceSelectorComponent audioMidiSettingComponent;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
