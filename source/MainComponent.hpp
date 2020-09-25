@@ -58,6 +58,9 @@ class MainComponent : public juce::Component,
   juce::AudioProcessorPlayer processorPlayer;
   // Audio Settings window for changing IO settings at runtime
   audioSettingsComponent audioSettings;
+
+  //trying the default for MIDI input as well
+  juce::AudioDeviceSelectorComponent audioMidiSelectorComponent;
   // this is JUCE's convenience MACRO to make sure we don't make terrible, terrible mistakes with
   // our pointers
   

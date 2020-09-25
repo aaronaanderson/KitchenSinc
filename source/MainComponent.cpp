@@ -41,7 +41,7 @@ MainComponent::MainComponent()
   std::cout << formatManager.getNumFormats() << std::endl;
   // tell the ProcessorPlayer what audio callback function to play (.get() needed since audioGraph
   // is a unique_ptr)
-    pluginListWindow = std::make_unique<PluginListWindow>(*this, formatManager);
+  
 
   processorPlayer.setProcessor(audioGraph.get());
   // simplest way to start audio device. Uses whichever device the current system (mac/pc/linux
@@ -96,7 +96,7 @@ void MainComponent::timerCallback() {
 }
 bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* originatingComponent){
     if(key.isKeyCode('a')){
-      std::cout << "it worked i guess" << std::endl;
+        pluginListWindow = std::make_unique<PluginListWindow>(*this, formatManager);
     }
 }
 void MainComponent::paint(juce::Graphics& g) {
