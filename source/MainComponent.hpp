@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MainComponent_hpp
+#define MainComponent_hpp
 
 // CMake builds don't use an AppConfig.h, so it's safe to include juce module
 // headers directly. If you need to remain compatible with Projucer-generated
@@ -20,7 +21,9 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent : public juce::Component, private juce::Timer {
+class MainComponent : public juce::Component,
+                      private juce::Timer,
+                      private juce::KeyListener {
  public:
   //==============================================================================
   MainComponent();
@@ -30,8 +33,12 @@ class MainComponent : public juce::Component, private juce::Timer {
   // stuff==============================================================================
   void paint(juce::Graphics&) override;
   void resized() override;
-
+  
+  // Timer override
   void timerCallback() override;
+  
+  // KeyListener override
+  virtual bool keyPressed (const juce::KeyPress& key, juce::Component* originatingComponent) override;
 
   TSine sineOsc;  // simple sine oscillator
 
@@ -51,9 +58,22 @@ class MainComponent : public juce::Component, private juce::Timer {
   // this DSP chain will be executed by the processorPlayer
   juce::AudioProcessorPlayer processorPlayer;
   // Audio Settings window for changing IO settings at runtime
-  audioSettingsComponent audioSettings;
+ // audioSettingsComponent audioSettings;
   // this is JUCE's convenience MACRO to make sure we don't make terrible, terrible mistakes with
   // our pointers
-  juce::AudioDeviceSelectorComponent audioMidiSettingComponent;
+  class AudioMidiSettingsWindow;
+ // std::unique_ptr<AudioMidiSettingsWindow> settingsWindow;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
+
+class MainComponent::AudioMidiSettingsWindow : public juce::DocumentWindow {
+  public:
+  AudioMidiSettingsWindow(MainComponent&, juce::AudioDeviceManager&);
+  ~AudioMidiSettingsWindow() override;
+  void closeButtonPressed() override;
+  private:
+  MainComponent& owner;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMidiSettingsWindow);
+};
+#endif 

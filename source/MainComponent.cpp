@@ -1,8 +1,31 @@
 #include "MainComponent.hpp"
 
+MainComponent::AudioMidiSettingsWindow::AudioMidiSettingsWindow(MainComponent& self, juce::AudioDeviceManager& deviceManagerRef)
+  : juce::DocumentWindow("Audio/MIDI Settings", 
+                         juce::LookAndFeel::getDefaultLookAndFeel().findColour(ResizableWindow::backgroundColourId), 
+                         DocumentWindow::minimiseButton | DocumentWindow::closeButton),
+    owner(self)
+{
+  //auto crashedFile = getAppProperties().getUserSettings()->getFile().getSiblingFile("RecentlyCrashedPluginsList");
+  setContentOwned(new juce::AudioDeviceSelectorComponent(deviceManagerRef, 
+                                                         0,
+                                                         16,
+                                                         0,
+                                                         16,
+                                                         true, true, false, false), true);  
+  //auto* plC = dynamic_cast<juce::AudioDeviceSelectorComponent*>(getContentComponent());
+  setResizable(true, false);
+  setResizeLimits(300, 400, 1920, 1080);
+  setTopLeftPosition(60, 60);
+  setVisible(true);
+
+  //for keyboard listener
+}
+
 //==============================================================================
-MainComponent::MainComponent()
-  : audioGraph(std::make_unique<juce::AudioProcessorGraph>()), audioSettings(deviceManager) {
+MainComponent::MainComponent() : audioGraph(std::make_unique<juce::AudioProcessorGraph>())
+  {
+    //audioSettings(*this, deviceManager) {
   setSize(600, 400);
   startTimerHz(30);
 
@@ -61,8 +84,8 @@ MainComponent::MainComponent()
   // mainComponent own a pointer to an editor, then point it to the editor when it's created.
   spectrogramEditor = spectrogramNode->getProcessor()->createEditor();
 
-  audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
-  addAndMakeVisible(audioSettings.button);
+  //audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
+  //addAndMakeVisible(audioSettings.button);
   addAndMakeVisible(spectrogramEditor);
 }
 // TrackGroup* trackGroupPtr = dynamic_cast<TrackGroup*>(graphElementList.data()[groupID].get());
@@ -74,6 +97,9 @@ void MainComponent::timerCallback() {
   spectrogramEditor->repaint();
 }
 
+bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* originatingComponent){
+
+}
 void MainComponent::paint(juce::Graphics& g) {
   // (Our component is opaque, so we must completely fill the background with a
   // solid colour)
@@ -88,7 +114,7 @@ void MainComponent::resized() {
   // This is called when the MainComponent is resized.
   // If you add any child components, this is where you should
   // update their positions.
-  audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
+  //audioSettings.button.setBounds(getLocalBounds().removeFromTop(50));
 }
 
 MainComponent::~MainComponent() {
