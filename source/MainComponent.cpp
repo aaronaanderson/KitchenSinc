@@ -18,6 +18,8 @@ MainComponent::PluginListWindow::PluginListWindow(MainComponent& self, juce::Aud
   setResizeLimits(300, 400, 1920, 1080);
   setTopLeftPosition(60, 60);
   setVisible(true);
+
+  //for keyboard listener
 }
 MainComponent::PluginListWindow::~PluginListWindow(){
   //We should set this here so it can be recovered when opening
@@ -35,6 +37,7 @@ MainComponent::MainComponent()
   startTimerHz(30);
   //#define JUCE_PLUGINHOST_LADSPA 1
   formatManager.addDefaultFormats();
+  addKeyListener(this);
   std::cout << formatManager.getNumFormats() << std::endl;
   // tell the ProcessorPlayer what audio callback function to play (.get() needed since audioGraph
   // is a unique_ptr)
@@ -91,7 +94,11 @@ void MainComponent::timerCallback() {
   // mainComponent because it seems to work.
   spectrogramEditor->repaint();
 }
-
+bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* originatingComponent){
+    if(key.isKeyCode('a')){
+      std::cout << "it worked i guess" << std::endl;
+    }
+}
 void MainComponent::paint(juce::Graphics& g) {
   // (Our component is opaque, so we must completely fill the background with a
   // solid colour)

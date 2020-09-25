@@ -22,7 +22,9 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent : public juce::Component, private juce::Timer {
+class MainComponent : public juce::Component, 
+                      private juce::Timer, 
+                      private juce::KeyListener{
  public:
   //==============================================================================
   MainComponent();
@@ -32,9 +34,12 @@ class MainComponent : public juce::Component, private juce::Timer {
   // stuff==============================================================================
   void paint(juce::Graphics&) override;
   void resized() override;
-
+  
+  //from juce::Timer
   void timerCallback() override;
-
+  
+  //from juce::KeyListener
+  bool keyPressed(const juce::KeyPress& key, juce::Component* originatingComponent) override;
   TSine sineOsc;  // simple sine oscillator
 
  private:
