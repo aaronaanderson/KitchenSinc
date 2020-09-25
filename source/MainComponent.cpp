@@ -18,10 +18,18 @@ MainComponent::AudioMidiSettingsWindow::AudioMidiSettingsWindow(MainComponent& s
   setResizeLimits(300, 400, 1920, 1080);
   setTopLeftPosition(60, 60);
   setVisible(true);
-
+  addKeyListener(this);
   //for keyboard listener
 }
-
+MainComponent::AudioMidiSettingsWindow::~AudioMidiSettingsWindow(){
+  //We should set this here so it can be recovered when opening
+  //getAppProperties().getUserSettings()->setValue("listWindowPos", getWindowStateAsString());
+  clearContentComponent();
+}
+void MainComponent::AudioMidiSettingsWindow::closeButtonPressed(){
+  //erase ourself from the owner's reference
+  owner.settingsWindow = nullptr;
+}
 //==============================================================================
 MainComponent::MainComponent() : audioGraph(std::make_unique<juce::AudioProcessorGraph>())
   {
@@ -98,7 +106,12 @@ void MainComponent::timerCallback() {
 }
 
 bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* originatingComponent){
-
+    if(key.isKeyCode('s')){
+      std::cout << "adsfkjhasdflkjhasdfkljh" << std::endl;
+      if(settingsWindow.get() != nullptr){
+        settingsWindow = std::make_unique<AudioMidiSettingsWindow>(*this, deviceManager);
+      }
+    }
 }
 void MainComponent::paint(juce::Graphics& g) {
   // (Our component is opaque, so we must completely fill the background with a

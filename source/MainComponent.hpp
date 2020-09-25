@@ -62,7 +62,7 @@ class MainComponent : public juce::Component,
   // this is JUCE's convenience MACRO to make sure we don't make terrible, terrible mistakes with
   // our pointers
   class AudioMidiSettingsWindow;
- // std::unique_ptr<AudioMidiSettingsWindow> settingsWindow;
+  std::unique_ptr<AudioMidiSettingsWindow> settingsWindow;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
