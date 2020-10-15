@@ -32,11 +32,11 @@ void MainComponent::PluginListWindow::closeButtonPressed(){
 }
 //==============================================================================
 MainComponent::MainComponent()
-  : audioGraph(std::make_unique<juce::AudioProcessorGraph>()), audioSettings(deviceManager) {
+  : audioGraph(std::make_unique<juce::AudioProcessorGraph>()), 
+  audioSettings(deviceManager) {
   setSize(600, 400);
   startTimerHz(30);
-  //#define JUCE_PLUGINHOST_LADSPA 1
-  formatManager.addDefaultFormats();
+  
   addKeyListener(this);
   std::cout << formatManager.getNumFormats() << std::endl;
   // tell the ProcessorPlayer what audio callback function to play (.get() needed since audioGraph
@@ -69,6 +69,29 @@ MainComponent::MainComponent()
   // audioGraph->addConnection({{testToneNode->nodeID, 0}, {audioOutputNode->nodeID, 0}});
   // // connect the 'right' channel
   // audioGraph->addConnection({{testToneNode->nodeID, 1}, {audioOutputNode->nodeID, 1}});
+  formatManager.addDefaultFormats();
+  //juce::File::getDi
+  juce::String filePath = juce::File::getCurrentWorkingDirectory().getParentDirectory().getFullPathName();//"/data/TestPlugin.vst3";
+  filePath += juce::String("/source/data/TestPlugin.vst3");
+
+  std::cout << filePath << std::endl;
+
+  juce::OwnedArray<juce::PluginDescription> descriptionsInFile;
+  vst3PluginFormat.findAllTypesForFile(descriptionsInFile, filePath);
+ 
+  std::cout << descriptionsInFile.size() << " plugins found in file\n";
+  if(descriptionsInFile.size() > 0){
+    std::cout << descriptionsInFile.getFirst()->name << std::endl;
+    juce::String errorString;
+    vstNode = audioGraph->addNode(
+              formatManager.createPluginInstance(*descriptionsInFile.getFirst(),
+                                                 deviceManager.getAudioDeviceSetup().sampleRate,
+                                                 deviceManager.getAudioDeviceSetup().bufferSize, 
+                                                 errorString));
+    std::cout << errorString;
+  }
+  std::cout << audioGraph->addConnection({{vstNode->nodeID, 0}, {audioOutputNode->nodeID, 0}});
+  std::cout << audioGraph->addConnection({{vstNode->nodeID, 1}, {audioOutputNode->nodeID, 1}});
 
   // Spectrogram
   spectrogramNode = audioGraph->addNode(std::make_unique<SpectrogramComponent>());

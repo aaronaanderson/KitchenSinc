@@ -60,7 +60,7 @@ class MainComponent : public juce::Component,
   audioSettingsComponent audioSettings;
 
   //trying the default for MIDI input as well
-  juce::AudioDeviceSelectorComponent audioMidiSelectorComponent;
+  //juce::AudioDeviceSelectorComponent audioMidiSelectorComponent;
   // this is JUCE's convenience MACRO to make sure we don't make terrible, terrible mistakes with
   // our pointers
   
@@ -76,6 +76,8 @@ class MainComponent : public juce::Component,
   juce::AudioPluginFormatManager formatManager;
   //list of known plugins (takes a while to fill, worth storing)
   juce::KnownPluginList knownPluginList;
+  juce::VST3PluginFormat vst3PluginFormat;
+  juce::AudioProcessorGraph::Node::Ptr vstNode;
   //making this as a subclass of MainComponent since it's small and only used here
   class PluginListWindow;//defined in CPP
   //only ever need one of these windows

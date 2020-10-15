@@ -44,6 +44,7 @@ juce_add_gui_app(KitchSinc
 #compile pedal
 add_subdirectory(pedal)
 
+add_subdirectory(TestPlugin)
 # `target_sources` adds source files to a target. We pass the target that needs the sources as the
 # first argument, then a visibility parameter for the sources (PRIVATE is normally best practice,
 # although it doesn't really affect executable targets). Finally, we supply a list of source files
